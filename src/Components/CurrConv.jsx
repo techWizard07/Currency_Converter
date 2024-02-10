@@ -3,7 +3,7 @@ import axios from "axios";
 import './CurrConv.css'
 import bgimg from '../images/background-currconv.png'
 function CurrConv() {
-    const[ammount,setAmmount]=useState(1)
+    const[ammount,setAmmount]=useState()
     const[fromAmmount,setFromAmmount]=useState('USD')
     const[toAmmount,setToAmmount]=useState('INR')
     const[convertedAmmount,setConvertedAmmount]=useState(null)
@@ -15,7 +15,7 @@ function CurrConv() {
                 let url = `https://api.exchangerate-api.com/v4/latest/${fromAmmount}`
                 const res=await axios.get(url)
                 setExchangeRate(res.data.rates[toAmmount])
-                setConvertedAmmount(ammount * exchangeRate)
+                
                 
             }
             catch(e){
@@ -23,7 +23,10 @@ function CurrConv() {
             }
         }
         getExchangeRate()
-    })
+    },[fromAmmount,toAmmount])
+    useEffect(()=>{
+        setConvertedAmmount((ammount * exchangeRate).toFixed(2))
+    },[ammount,exchangeRate])
 
     const handleAmmountChange=(e)=>{
         const value=parseFloat(e.target.value)
